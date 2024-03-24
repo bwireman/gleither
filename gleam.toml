@@ -1,7 +1,7 @@
 name = "gleither"
 version = "0.1.0"
 
-description = "A small data-structure for representing Left or Right"
+description = "A small data-structure for representing an Either Monad"
 licences = ["MIT"]
 repository = { type = "github", user = "bwireman", repo = "gleither" }
 links = []

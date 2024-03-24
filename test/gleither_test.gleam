@@ -27,6 +27,16 @@ pub fn get_test() {
   |> should.equal(None)
 }
 
+pub fn get_with_default_test() {
+  Left(1)
+  |> gleither.get_with_default(2)
+  |> should.equal(1)
+
+  Right(1)
+  |> gleither.get_with_default(2)
+  |> should.equal(2)
+}
+
 pub fn map_test() {
   Left(1)
   |> gleither.map(fn(x) { x + 1 })
@@ -55,24 +65,6 @@ pub fn flat_map_test() {
   |> should.equal(Right(1))
 }
 
-pub fn flat_map_right_test() {
-  Right(1)
-  |> gleither.flat_map_right(fn(x) { Left(x + 1) })
-  |> should.equal(Left(2))
-
-  Right(1)
-  |> gleither.flat_map_right(fn(x) { Right(x + 1) })
-  |> should.equal(Right(2))
-
-  Left(1)
-  |> gleither.flat_map_right(fn(x) { Left(x + 1) })
-  |> should.equal(Left(1))
-
-  Left(1)
-  |> gleither.flat_map_right(fn(x) { Right(x + 1) })
-  |> should.equal(Left(1))
-}
-
 pub fn is_right_test() {
   Left(1)
   |> gleither.is_right()
@@ -93,6 +85,16 @@ pub fn get_right_test() {
   |> should.equal(Some(1))
 }
 
+pub fn get_right_with_default_test() {
+  Left(1)
+  |> gleither.get_right_with_default(2)
+  |> should.equal(2)
+
+  Right(1)
+  |> gleither.get_right_with_default(2)
+  |> should.equal(1)
+}
+
 pub fn map_right_test() {
   Left(1)
   |> gleither.map_right(fn(x) { x + 1 })
@@ -103,6 +105,24 @@ pub fn map_right_test() {
   |> should.equal(Right(2))
 }
 
+pub fn flat_map_right_test() {
+  Right(1)
+  |> gleither.flat_map_right(fn(x) { Left(x + 1) })
+  |> should.equal(Left(2))
+
+  Right(1)
+  |> gleither.flat_map_right(fn(x) { Right(x + 1) })
+  |> should.equal(Right(2))
+
+  Left(1)
+  |> gleither.flat_map_right(fn(x) { Left(x + 1) })
+  |> should.equal(Left(1))
+
+  Left(1)
+  |> gleither.flat_map_right(fn(x) { Right(x + 1) })
+  |> should.equal(Left(1))
+}
+
 pub fn swap_test() {
   Left(1)
   |> gleither.swap()
@@ -111,4 +131,24 @@ pub fn swap_test() {
   Right(1)
   |> gleither.swap()
   |> should.equal(Left(1))
+}
+
+pub fn full_map_test() {
+  Left(1)
+  |> gleither.full_map(fn(x) { x + 1 }, fn(x) { x * 3 })
+  |> should.equal(Left(2))
+
+  Right(1)
+  |> gleither.full_map(fn(x) { x + 1 }, fn(x) { x * 3 })
+  |> should.equal(Right(3))
+}
+
+pub fn full_flat_map_test() {
+  Left(1)
+  |> gleither.full_flat_map(fn(x) { Left(x + 1) }, fn(x) { Right(x * 3) })
+  |> should.equal(Left(2))
+
+  Right(1)
+  |> gleither.full_flat_map(fn(x) { Left(x + 1) }, fn(x) { Right(x * 3) })
+  |> should.equal(Right(3))
 }
