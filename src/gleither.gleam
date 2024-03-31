@@ -37,6 +37,7 @@ pub fn get_right(either: Either(left, right)) -> Option(right) {
   }
 }
 
+/// alias for get_right
 pub fn get(either: Either(left, right)) -> Option(right) {
   get_right(either)
 }
@@ -58,6 +59,7 @@ pub fn get_right_with_default(
   |> option.unwrap(default)
 }
 
+/// alias for get_right_with_default
 pub fn get_with_default(either: Either(left, right), default: right) -> right {
   get_right_with_default(either, default)
 }
@@ -84,6 +86,7 @@ pub fn map_right(
   }
 }
 
+/// alias for map_right
 pub fn map(
   either: Either(left, right),
   func: fn(right) -> new,
@@ -122,6 +125,7 @@ pub fn flatten_right(
   }
 }
 
+/// alias for flatten_right
 pub fn flatten(either: Either(left, Either(left, right))) -> Either(left, right) {
   flatten_right(either)
 }
@@ -157,6 +161,7 @@ pub fn flat_map_right(
   |> flatten_right
 }
 
+/// alias for flat_map_right
 pub fn flat_map(
   either: Either(left, right),
   func: fn(right) -> Either(left, right),

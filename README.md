@@ -16,9 +16,16 @@ gleam add gleither
 import gleither.{Left, Right, map, get}
 
 pub fn main() {
-  Left(1)
+  Right(1)
   |> map(fn(x) { x + 1 })
   |> get()
   // Some(2)
+}
+
+fn ex() {
+  Left(1)
+  |> map(fn(x) { x + 1 })
+  |> get()
+  // Some(1)
 }
 ```
