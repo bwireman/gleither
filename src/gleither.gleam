@@ -10,19 +10,19 @@ pub type Either(left, right) {
 
 /// Returns True if the supplied value is a Left
 pub fn is_left(either: Either(left, right)) -> Bool {
-  case either {
-    Left(_) -> True
-    Right(_) -> False
-  }
+  !is_right(either)
 }
 
 /// Returns True if the supplied value is a Right
 pub fn is_right(either: Either(left, right)) -> Bool {
-  !is_left(either)
+  case either {
+    Left(_) -> False
+    Right(_) -> True
+  }
 }
 
 /// get the value of a Left or None
-pub fn get(either: Either(left, right)) -> Option(left) {
+pub fn get_left(either: Either(left, right)) -> Option(left) {
   case either {
     Left(val) -> Some(val)
     Right(_) -> None
@@ -37,10 +37,14 @@ pub fn get_right(either: Either(left, right)) -> Option(right) {
   }
 }
 
+pub fn get(either: Either(left, right)) -> Option(right) {
+  get_right(either)
+}
+
 /// get the value of a Left or default
-pub fn get_with_default(either: Either(left, right), default: left) -> left {
+pub fn get_left_with_default(either: Either(left, right), default: left) -> left {
   either
-  |> get()
+  |> get_left()
   |> option.unwrap(default)
 }
 
@@ -54,8 +58,12 @@ pub fn get_right_with_default(
   |> option.unwrap(default)
 }
 
+pub fn get_with_default(either: Either(left, right), default: right) -> right {
+  get_right_with_default(either, default)
+}
+
 /// apply a function to the Left or preserve the Right
-pub fn map(
+pub fn map_left(
   either: Either(left, right),
   func: fn(left) -> new,
 ) -> Either(new, right) {
@@ -76,6 +84,13 @@ pub fn map_right(
   }
 }
 
+pub fn map(
+  either: Either(left, right),
+  func: fn(right) -> new,
+) -> Either(left, new) {
+  map_right(either, func)
+}
+
 /// map either potential value
 pub fn full_map(
   either: Either(left, right),
@@ -83,12 +98,12 @@ pub fn full_map(
   right_func: fn(right) -> new_right,
 ) -> Either(new_left, new_right) {
   either
-  |> map(left_func)
+  |> map_left(left_func)
   |> map_right(right_func)
 }
 
 /// flatten a nested Left
-pub fn flatten(
+pub fn flatten_left(
   either: Either(Either(left, right), right),
 ) -> Either(left, right) {
   case either {
@@ -107,14 +122,18 @@ pub fn flatten_right(
   }
 }
 
+pub fn flatten(either: Either(left, Either(left, right))) -> Either(left, right) {
+  flatten_right(either)
+}
+
 /// map and flatten a Left
-pub fn flat_map(
+pub fn flat_map_left(
   either: Either(left, right),
   func: fn(left) -> Either(left, right),
 ) -> Either(left, right) {
   either
-  |> map(func)
-  |> flatten
+  |> map_left(func)
+  |> flatten_left
 }
 
 /// flat_map either potential value
@@ -124,7 +143,7 @@ pub fn full_flat_map(
   right_func: fn(right) -> Either(left, right),
 ) -> Either(left, right) {
   either
-  |> flat_map(left_func)
+  |> flat_map_left(left_func)
   |> flat_map_right(right_func)
 }
 
@@ -136,6 +155,13 @@ pub fn flat_map_right(
   either
   |> map_right(func)
   |> flatten_right
+}
+
+pub fn flat_map(
+  either: Either(left, right),
+  func: fn(right) -> Either(left, right),
+) -> Either(left, right) {
+  flat_map_right(either, func)
 }
 
 /// Convert a Left to a Right and vice versa

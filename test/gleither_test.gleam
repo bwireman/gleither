@@ -19,49 +19,49 @@ pub fn is_left_test() {
 
 pub fn get_test() {
   Left(1)
-  |> gleither.get()
+  |> gleither.get_left()
   |> should.equal(Some(1))
 
   Right(1)
-  |> gleither.get()
+  |> gleither.get_left()
   |> should.equal(None)
 }
 
 pub fn get_with_default_test() {
   Left(1)
-  |> gleither.get_with_default(2)
+  |> gleither.get_left_with_default(2)
   |> should.equal(1)
 
   Right(1)
-  |> gleither.get_with_default(2)
+  |> gleither.get_left_with_default(2)
   |> should.equal(2)
 }
 
 pub fn map_test() {
   Left(1)
-  |> gleither.map(fn(x) { x + 1 })
+  |> gleither.map_left(fn(x) { x + 1 })
   |> should.equal(Left(2))
 
   Right(1)
-  |> gleither.map(fn(x) { x + 1 })
+  |> gleither.map_left(fn(x) { x + 1 })
   |> should.equal(Right(1))
 }
 
 pub fn flat_map_test() {
   Left(1)
-  |> gleither.flat_map(fn(x) { Left(x + 1) })
+  |> gleither.flat_map_left(fn(x) { Left(x + 1) })
   |> should.equal(Left(2))
 
   Left(1)
-  |> gleither.flat_map(fn(x) { Right(x + 1) })
+  |> gleither.flat_map_left(fn(x) { Right(x + 1) })
   |> should.equal(Right(2))
 
   Right(1)
-  |> gleither.flat_map(fn(x) { Left(x + 1) })
+  |> gleither.flat_map_left(fn(x) { Left(x + 1) })
   |> should.equal(Right(1))
 
   Right(1)
-  |> gleither.flat_map(fn(x) { Right(x + 1) })
+  |> gleither.flat_map_left(fn(x) { Right(x + 1) })
   |> should.equal(Right(1))
 }
 
