@@ -1,7 +1,7 @@
+import gleam/option.{None, Some}
 import gleeunit
 import gleeunit/should
 import gleither.{Left, Right}
-import gleam/option.{None, Some}
 
 pub fn main() {
   gleeunit.main()
