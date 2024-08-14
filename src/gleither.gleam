@@ -176,3 +176,11 @@ pub fn swap(either: Either(left, right)) -> Either(right, left) {
     Left(l) -> Right(l)
   }
 }
+
+/// Convert a Result to an Either, mapping Ok to Left and Error to Right
+pub fn from_result(result: Result(left, right)) -> Either(left, right) {
+  case result {
+    Ok(l) -> Left(l)
+    Error(r) -> Right(r)
+  }
+}
