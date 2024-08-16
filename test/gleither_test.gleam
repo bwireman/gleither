@@ -152,3 +152,13 @@ pub fn full_flat_map_test() {
   |> gleither.full_flat_map(fn(x) { Left(x + 1) }, fn(x) { Right(x * 3) })
   |> should.equal(Right(3))
 }
+
+pub fn from_result_test() {
+  Ok(1)
+  |> gleither.from_result()
+  |> should.equal(Left(1))
+
+  Error(1)
+  |> gleither.from_result()
+  |> should.equal(Right(1))
+}
