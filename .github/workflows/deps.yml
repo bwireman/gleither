@@ -2,7 +2,7 @@ name: Dependency Check
 
 on:
   schedule:
-  - cron: "*/5 * * * *"
+  - cron: "*/15 * * * *"
 
 env:
   otp: "27.0"
