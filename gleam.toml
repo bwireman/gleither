@@ -16,5 +16,5 @@ go_over = ">= 2.0.0 and < 3.0.0"
 [javascript]
 typescript_declarations = true
 
-[go-over.ignore]
-packages = ["gleam_hexpm"]
+[go-over]
+global = true
