@@ -18,3 +18,4 @@ typescript_declarations = true
 
 [go-over]
 global = true
+outdated = true
