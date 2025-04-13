@@ -19,3 +19,6 @@ typescript_declarations = true
 [go-over]
 global = true
 outdated = true
+
+[go-over.ignore]
+packages = ["gleam_hexpm"]
