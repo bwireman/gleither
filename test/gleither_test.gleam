@@ -162,3 +162,47 @@ pub fn from_result_test() {
   |> gleither.from_result()
   |> should.equal(Right(1))
 }
+
+pub fn group_left_test() {
+  gleither.group_left([Left(1), Left(5), Right("a"), Right("b"), Left(6)])
+  |> should.equal([Left([1, 5]), Right("a"), Left([]), Right("b"), Left([6])])
+
+  gleither.group_left([Left(1), Left(5), Right("a"), Right("b")])
+  |> should.equal([Left([1, 5]), Right("a"), Left([]), Right("b"), Left([])])
+
+  gleither.group_left([Right("a"), Right("b")])
+  |> should.equal([Left([]), Right("a"), Left([]), Right("b"), Left([])])
+}
+
+pub fn nonempty_group_left_test() {
+  gleither.nonempty_group_left([Left(1), Left(5), Right("a"), Right("b"), Left(6)])
+  |> should.equal([Left([1, 5]), Right("a"), Right("b"), Left([6])])
+
+  gleither.nonempty_group_left([Left(1), Left(5), Right("a"), Right("b")])
+  |> should.equal([Left([1, 5]), Right("a"), Right("b")])
+
+  gleither.nonempty_group_left([Right("a"), Right("b")])
+  |> should.equal([Right("a"), Right("b")])
+}
+
+pub fn group_right_test() {
+  gleither.group_right([Right(1), Right(5), Left("a"), Left("b"), Right(6)])
+  |> should.equal([Right([1, 5]), Left("a"), Right([]), Left("b"), Right([6])])
+
+  gleither.group_right([Right(1), Right(5), Left("a"), Left("b")])
+  |> should.equal([Right([1, 5]), Left("a"), Right([]), Left("b"), Right([])])
+
+  gleither.group_right([Left("a"), Left("b")])
+  |> should.equal([Right([]), Left("a"), Right([]), Left("b"), Right([])])
+}
+
+pub fn nonempty_group_right_test() {
+  gleither.nonempty_group_right([Right(1), Right(5), Left("a"), Left("b"), Right(6)])
+  |> should.equal([Right([1, 5]), Left("a"), Left("b"), Right([6])])
+
+  gleither.nonempty_group_right([Right(1), Right(5), Left("a"), Left("b")])
+  |> should.equal([Right([1, 5]), Left("a"), Left("b")])
+
+  gleither.nonempty_group_right([Left("a"), Left("b")])
+  |> should.equal([Left("a"), Left("b")])
+}
