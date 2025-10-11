@@ -206,3 +206,28 @@ pub fn nonempty_group_right_test() {
   gleither.nonempty_group_right([Left("a"), Left("b")])
   |> should.equal([Left("a"), Left("b")])
 }
+
+pub fn resolve_test() {
+  gleither.resolve(
+    Left(1),
+    fn(x) { x + 1 },
+    fn(_) { 0 },
+  )
+  |> should.equal(2)
+
+  gleither.resolve(
+    Right(Nil),
+    fn(x) { x + 1 },
+    fn(_) { 0 },
+  )
+  |> should.equal(0)
+}
+
+pub fn map_resolve_test() {
+  gleither.map_resolve(
+    [Left(1), Right(Nil)],
+    fn(x) { x + 1 },
+    fn(_) { 0 },
+  )
+  |> should.equal([2, 0])
+}
