@@ -337,3 +337,34 @@ pub fn map_resolve(
 ) -> List(new) {
   list.map(vals, resolve(_, left_map, right_map))
 }
+
+/// constructs an Either from a value and a Bool by wrapping the value with Left
+/// if the Bool is False, Right if the Bool is True
+pub fn from_bool(
+  val: a,
+  bool: Bool,
+) -> Either(a, a) {
+  case bool {
+    False -> Left(val)
+    True -> Right(val)
+  }
+}
+
+/// constructs an Either from a value val : a and a condition fn(a) -> Bool, 
+/// wrapping the value with Left or Right according to whether the condition evaluates
+/// to False or True, respectively, at the value
+pub fn from_condition(
+  val: a,
+  condition: fn(a) -> Bool,
+) -> Either(a, a) {
+  from_bool(val, condition(val))
+}
+
+/// shorthand to list.map gleither.from_condition over a list of values, creating
+/// a List(Either(a, a)) from a List(a) via a condition: fn(a) -> Bool
+pub fn map_from_condition(
+  vals: List(a),
+  condition: fn(a) -> Bool,
+) -> List(Either(a, a)) {
+  list.map(vals, from_condition(_, condition))
+}
