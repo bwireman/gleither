@@ -231,3 +231,24 @@ pub fn map_resolve_test() {
   )
   |> should.equal([2, 0])
 }
+
+pub fn from_bool_test() {
+  gleither.from_bool(1, False)
+  |> should.equal(Left(1))
+
+  gleither.from_bool(1, True)
+  |> should.equal(Right(1))
+}
+
+pub fn from_condition_test() {
+  gleither.from_condition(1, fn(x) { x > 0 })
+  |> should.equal(Right(1))
+
+  gleither.from_condition(0, fn(x) { x > 0 })
+  |> should.equal(Left(0))
+}
+
+pub fn map_from_condition_test() {
+  gleither.map_from_condition([-1, 0, 1, 0], fn(x) { x > 0 })
+  |> should.equal([Left(-1), Left(0), Right(1), Left(0)])
+}
