@@ -1,3 +1,4 @@
+import gleam/list
 import gleam/option.{type Option, None, Some}
 
 /// monad representing a Left or Right
@@ -185,3 +186,132 @@ pub fn from_result(result: Result(left, right)) -> Either(left, right) {
   }
 }
 
+fn group_left_acc(
+  already_packaged: List(Either(List(left), right)),
+  under_construction: List(left),
+  upcoming: List(Either(left, right)),
+) -> List(Either(List(left), right)) {
+  case upcoming {
+    [] ->
+      [under_construction |> list.reverse |> Left, ..already_packaged]
+      |> list.reverse
+
+    [Left(left), ..rest] ->
+      group_left_acc(
+        already_packaged,
+        [left, ..under_construction],
+        rest,
+      )
+
+    [Right(right), ..rest] ->
+      group_left_acc(
+        [
+          Right(right),
+          under_construction |> list.reverse |> Left,
+          ..already_packaged
+        ],
+        [],
+        rest,
+      )
+  }
+}
+
+/// group consecutive Left-elements of a List(Either) into sublists,
+/// converting a List(Either(left, right)) to a List(Either(List(left), right))
+/// 
+/// ### Example
+/// 
+/// group_left([Left(1), Left(5), Left(4), Right("a"), Right("b"), Left(6), Right("c"))
+/// 
+/// // -> [Left([1, 5, 4]), Right("a"), Left([]), Right("b"), Left([6]), Right("c"), Left([])]
+pub fn group_left(
+  vals: List(Either(left, right))
+) -> List(Either(List(left), right)) {
+  group_left_acc([], [], vals)
+}
+
+/// group consecutive Left-elements of a List(Either) into sublists,
+/// converting a List(Either(left, right)) to a List(Either(List(left), right)),
+/// while discarding empty lists
+/// 
+/// ### Example
+/// 
+/// group_left([Left(1), Left(5), Left(4), Right("a"), Right("b"), Left(6), Right("c"))
+/// 
+/// // -> [Left([1, 5, 4]), Right("a"), Right("b"), Left([6]), Right("c")]
+pub fn nonempty_group_left(
+  vals: List(Either(left, right))
+) -> List(Either(List(left), right)) {
+  group_left_acc([], [], vals)
+  |> list.filter(fn(x) {
+    case x {
+      Left(y) -> !{ list.is_empty(y) }
+      Right(_) -> True
+    }
+  })
+}
+
+fn group_right_acc(
+  already_packaged: List(Either(left, List(right))),
+  under_construction: List(right),
+  upcoming: List(Either(left, right)),
+) -> List(Either(left, List(right))) {
+  case upcoming {
+    [] ->
+      [under_construction |> list.reverse |> Right, ..already_packaged]
+      |> list.reverse
+
+    [Right(right), ..rest] ->
+      group_right_acc(
+        already_packaged,
+        [right, ..under_construction],
+        rest,
+      )
+
+    [Left(left), ..rest] ->
+      group_right_acc(
+        [
+          Left(left),
+          under_construction |> list.reverse |> Right,
+          ..already_packaged
+        ],
+        [],
+        rest,
+      )
+  }
+}
+
+/// group consecutive Right-elements of a List(Either) into sublists,
+/// converting a List(Either(left, right)) to a List(Either(left, List(right)))
+/// 
+/// ### Example
+/// 
+/// group_right([Left(1), Left(5), Left(4), Right("a"), Right("b"), Left(6), Right("c"))
+/// 
+/// // -> [Right([]), Left(1), Left(5), Left(4), Right(["a", "b"]), Left(6), Right(["c"])]
+pub fn group_right(
+  vals: List(Either(left, right))
+) -> List(Either(left, List(right))) {
+  group_right_acc([], [], vals)
+}
+
+/// group consecutive Right-elements of a List(Either) into sublists,
+/// converting a List(Either(left, right)) to a List(Either(left, List(right))),
+/// while discarding empty lists
+/// 
+/// ### Example
+/// 
+/// group_right([Left(1), Left(5), Left(4), Right("a"), Right("b"), Left(6), Right("c"))
+/// 
+/// // -> [Left(1), Left(5), Left(4), Right(["a", "b"]), Left(6), Right(["c"])]
+pub fn nonempty_group_right(
+  vals: List(Either(left, right))
+) -> List(Either(left, List(right))) {
+  group_right_acc([], [], vals)
+  |> list.filter(fn(x) {
+    case x {
+      Left(_) -> True
+      Right(y) -> !{ list.is_empty(y) }
+    }
+  })
+}
