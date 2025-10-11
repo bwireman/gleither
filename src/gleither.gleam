@@ -1,6 +1,6 @@
 import gleam/option.{type Option, None, Some}
 
-/// Monad representing a Left or Right
+/// monad representing a Left or Right
 pub type Either(left, right) {
   /// left
   Left(val: left)
@@ -8,12 +8,12 @@ pub type Either(left, right) {
   Right(val: right)
 }
 
-/// Returns True if the supplied value is a Left
+/// returns True if the supplied value is a Left
 pub fn is_left(either: Either(left, right)) -> Bool {
   !is_right(either)
 }
 
-/// Returns True if the supplied value is a Right
+/// returns True if the supplied value is a Right
 pub fn is_right(either: Either(left, right)) -> Bool {
   case either {
     Left(_) -> False
@@ -169,7 +169,7 @@ pub fn flat_map(
   flat_map_right(either, func)
 }
 
-/// Convert a Left to a Right and vice versa
+/// convert a Left to a Right and vice versa
 pub fn swap(either: Either(left, right)) -> Either(right, left) {
   case either {
     Right(r) -> Left(r)
@@ -177,10 +177,11 @@ pub fn swap(either: Either(left, right)) -> Either(right, left) {
   }
 }
 
-/// Convert a Result to an Either, mapping Ok to Left and Error to Right
+/// convert a Result to an Either, mapping Ok to Left and Error to Right
 pub fn from_result(result: Result(left, right)) -> Either(left, right) {
   case result {
     Ok(l) -> Left(l)
     Error(r) -> Right(r)
   }
 }
+
