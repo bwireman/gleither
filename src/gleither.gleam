@@ -315,3 +315,25 @@ pub fn nonempty_group_right(
     }
   })
 }
+
+/// maps an Either(left, right) value to a value of a third type by applying 
+/// separate Left and Right mappers that both map to the third type
+pub fn resolve(
+  val: Either(left, right),
+  left_map: fn(left) -> new,
+  right_map: fn(right) -> new,
+) -> new {
+  case val {
+    Left(left) -> left_map(left)
+    Right(right) -> right_map(right)
+  }
+}
+
+/// a shorthand to list.map gleither.resolve
+pub fn map_resolve(
+  vals: List(Either(left, right)),
+  left_map: fn(left) -> new,
+  right_map: fn(right) -> new,
+) -> List(new) {
+  list.map(vals, resolve(_, left_map, right_map))
+}
