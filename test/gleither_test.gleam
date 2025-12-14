@@ -2,9 +2,16 @@ import gleam/option.{None, Some}
 import gleeunit
 import gleeunit/should
 import gleither.{Left, Right}
+import testament
+import testament/conf.{Import}
 
 pub fn main() {
-  gleeunit.main()
+  testament.test_main_with_opts(gleeunit.main, [
+    conf.ExtraImports("src/gleither.gleam", [
+      Import("gleam/option", []),
+      Import("gleam/int", []),
+    ]),
+  ])
 }
 
 pub fn is_left_test() {

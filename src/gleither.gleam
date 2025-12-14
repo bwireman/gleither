@@ -10,11 +10,17 @@ pub type Either(left, right) {
 }
 
 /// returns True if the supplied value is a Left
+///```gleam
+///: assert gleither.is_left(gleither.Left(1))
+///```
 pub fn is_left(either: Either(left, right)) -> Bool {
   !is_right(either)
 }
 
 /// returns True if the supplied value is a Right
+///```gleam
+///: assert gleither.is_right(gleither.Right(1))
+///```
 pub fn is_right(either: Either(left, right)) -> Bool {
   case either {
     Left(_) -> False
@@ -23,6 +29,9 @@ pub fn is_right(either: Either(left, right)) -> Bool {
 }
 
 /// get the value of a Left or None
+///```gleam
+///: let assert option.Some(1) = gleither.get_left(gleither.Left(1))
+///```
 pub fn get_left(either: Either(left, right)) -> Option(left) {
   case either {
     Left(val) -> Some(val)
@@ -31,6 +40,9 @@ pub fn get_left(either: Either(left, right)) -> Option(left) {
 }
 
 /// get the value of a Right or None
+///```gleam
+///: let assert option.Some(1) = gleither.get_right(gleither.Right(1))
+///```
 pub fn get_right(either: Either(left, right)) -> Option(right) {
   case either {
     Right(val) -> Some(val)
@@ -39,11 +51,20 @@ pub fn get_right(either: Either(left, right)) -> Option(right) {
 }
 
 /// alias for get_right
+/// get the value of a Right or None
+///```gleam
+///: let assert option.Some(1) = gleither.get(gleither.Right(1))
+///: let assert option.None = gleither.get(gleither.Left(1))
+///```
 pub fn get(either: Either(left, right)) -> Option(right) {
   get_right(either)
 }
 
 /// get the value of a Left or default
+///```gleam
+///: assert gleither.get_left_with_default(gleither.Left(1), -1) == 1
+///: assert gleither.get_left_with_default(gleither.Right(1), -1) == -1
+///```
 pub fn get_left_with_default(either: Either(left, right), default: left) -> left {
   either
   |> get_left()
@@ -51,6 +72,10 @@ pub fn get_left_with_default(either: Either(left, right), default: left) -> left
 }
 
 /// get the value of a Right or default
+///```gleam
+///: assert gleither.get_right_with_default(gleither.Right(1), -1) == 1
+///: assert gleither.get_right_with_default(gleither.Left(1), -1) == -1
+///```
 pub fn get_right_with_default(
   either: Either(left, right),
   default: right,
@@ -61,11 +86,19 @@ pub fn get_right_with_default(
 }
 
 /// alias for get_right_with_default
+///```gleam
+///: assert gleither.get_with_default(gleither.Right(1), -1) == gleither.get_right_with_default(gleither.Right(1), -1)
+///: assert gleither.get_with_default(gleither.Left(1), -1) == gleither.get_right_with_default(gleither.Left(1), -1)
+///```
 pub fn get_with_default(either: Either(left, right), default: right) -> right {
   get_right_with_default(either, default)
 }
 
 /// apply a function to the Left or preserve the Right
+///```gleam
+///: let assert gleither.Left(2) = gleither.map_left(gleither.Left(1), int.add(_, 1)) 
+///: let assert gleither.Right(1) = gleither.map_left(gleither.Right(1), int.add(_, 1)) 
+///```
 pub fn map_left(
   either: Either(left, right),
   func: fn(left) -> new,
@@ -77,6 +110,10 @@ pub fn map_left(
 }
 
 /// apply a function to the Right or preserve the Left
+///```gleam
+///: let assert gleither.Left(1) = gleither.map_right(gleither.Left(1), int.add(_, 1)) 
+///: let assert gleither.Right(2) = gleither.map_right(gleither.Right(1), int.add(_, 1)) 
+///```
 pub fn map_right(
   either: Either(left, right),
   func: fn(right) -> new,
@@ -88,6 +125,10 @@ pub fn map_right(
 }
 
 /// alias for map_right
+///```gleam
+///: let assert gleither.Left(1) = gleither.map(gleither.Left(1), int.add(_, 1)) 
+///: let assert gleither.Right(2) = gleither.map(gleither.Right(1), int.add(_, 1)) 
+///```
 pub fn map(
   either: Either(left, right),
   func: fn(right) -> new,
@@ -96,6 +137,10 @@ pub fn map(
 }
 
 /// map either potential value
+///```gleam
+///: let assert gleither.Left(2) = gleither.full_map(gleither.Left(1), int.add(_, 1), int.add(_, 1)) 
+///: let assert gleither.Right(2) = gleither.full_map(gleither.Right(1), int.add(_, 1), int.add(_, 1)) 
+///```
 pub fn full_map(
   either: Either(left, right),
   left_func: fn(left) -> new_left,
@@ -107,6 +152,9 @@ pub fn full_map(
 }
 
 /// flatten a nested Left
+///```gleam
+///: let assert gleither.Left(1) = gleither.flatten_left(gleither.Left(gleither.Left(1))) 
+///```
 pub fn flatten_left(
   either: Either(Either(left, right), right),
 ) -> Either(left, right) {
@@ -117,6 +165,9 @@ pub fn flatten_left(
 }
 
 /// flatten a nested Right
+///```gleam
+///: let assert gleither.Right(1) = gleither.flatten_right(gleither.Right(gleither.Right(1))) 
+///```
 pub fn flatten_right(
   either: Either(left, Either(left, right)),
 ) -> Either(left, right) {
@@ -127,11 +178,19 @@ pub fn flatten_right(
 }
 
 /// alias for flatten_right
+///```gleam
+///: let assert gleither.Right(1) = gleither.flatten_right(gleither.Right(gleither.Right(1))) 
+///```
 pub fn flatten(either: Either(left, Either(left, right))) -> Either(left, right) {
   flatten_right(either)
 }
 
 /// map and flatten a Left
+///```gleam 
+///: let assert gleither.Left(2) =
+///: gleither.Left(1)
+///: |> gleither.flat_map_left(fn(x) { gleither.Left(x + 1) })
+///```
 pub fn flat_map_left(
   either: Either(left, right),
   func: fn(left) -> Either(left, right),
@@ -141,18 +200,12 @@ pub fn flat_map_left(
   |> flatten_left
 }
 
-/// flat_map either potential value
-pub fn full_flat_map(
-  either: Either(left, right),
-  left_func: fn(left) -> Either(left, right),
-  right_func: fn(right) -> Either(left, right),
-) -> Either(left, right) {
-  either
-  |> flat_map_left(left_func)
-  |> flat_map_right(right_func)
-}
-
 /// map and flatten a Right
+///```gleam 
+///: let assert gleither.Right(2) =
+///: gleither.Right(1)
+///: |> gleither.flat_map_right(fn(x) { gleither.Right(x + 1) })
+///```
 pub fn flat_map_right(
   either: Either(left, right),
   func: fn(right) -> Either(left, right),
@@ -163,6 +216,11 @@ pub fn flat_map_right(
 }
 
 /// alias for flat_map_right
+///```gleam 
+///: let assert gleither.Right(2) =
+///: gleither.Right(1)
+///: |> gleither.flat_map(fn(x) { gleither.Right(x + 1) })
+///```
 pub fn flat_map(
   either: Either(left, right),
   func: fn(right) -> Either(left, right),
@@ -170,7 +228,31 @@ pub fn flat_map(
   flat_map_right(either, func)
 }
 
+/// flat_map either potential value
+///```gleam
+///: let assert gleither.Left(2) =
+///: gleither.Left(1)
+///: |> gleither.full_flat_map(fn(x) { gleither.Left(x + 1) }, fn(x) { gleither.Right(x * 3) })
+///```
+///```gleam
+///: let assert gleither.Right(3) =
+///: gleither.Right(1)
+///: |> gleither.full_flat_map(fn(x) { gleither.Left(x + 1) }, fn(x) { gleither.Right(x * 3) })
+///```
+pub fn full_flat_map(
+  either: Either(left, right),
+  left_func: fn(left) -> Either(left, right),
+  right_func: fn(right) -> Either(left, right),
+) -> Either(left, right) {
+  either
+  |> flat_map_left(left_func)
+  |> flat_map_right(right_func)
+}
+
 /// convert a Left to a Right and vice versa
+///```gleam
+///: let assert gleither.Right(1) = gleither.swap(gleither.Left(1))  
+///```
 pub fn swap(either: Either(left, right)) -> Either(right, left) {
   case either {
     Right(r) -> Left(r)
@@ -179,6 +261,10 @@ pub fn swap(either: Either(left, right)) -> Either(right, left) {
 }
 
 /// convert a Result to an Either, mapping Ok to Left and Error to Right
+///```gleam
+///: let assert gleither.Left(1) = gleither.from_result(Ok(1))  
+///: let assert gleither.Right(1) = gleither.from_result(Error(1))  
+///```
 pub fn from_result(result: Result(left, right)) -> Either(left, right) {
   case result {
     Ok(l) -> Left(l)
