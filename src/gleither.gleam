@@ -283,11 +283,7 @@ fn group_left_acc(
       |> list.reverse
 
     [Left(left), ..rest] ->
-      group_left_acc(
-        already_packaged,
-        [left, ..under_construction],
-        rest,
-      )
+      group_left_acc(already_packaged, [left, ..under_construction], rest)
 
     [Right(right), ..rest] ->
       group_left_acc(
@@ -311,7 +307,7 @@ fn group_left_acc(
 /// 
 /// // -> [Left([1, 5, 4]), Right("a"), Left([]), Right("b"), Left([6]), Right("c"), Left([])]
 pub fn group_left(
-  vals: List(Either(left, right))
+  vals: List(Either(left, right)),
 ) -> List(Either(List(left), right)) {
   group_left_acc([], [], vals)
 }
@@ -326,7 +322,7 @@ pub fn group_left(
 /// 
 /// // -> [Left([1, 5, 4]), Right("a"), Right("b"), Left([6]), Right("c")]
 pub fn nonempty_group_left(
-  vals: List(Either(left, right))
+  vals: List(Either(left, right)),
 ) -> List(Either(List(left), right)) {
   group_left_acc([], [], vals)
   |> list.filter(fn(x) {
@@ -348,11 +344,7 @@ fn group_right_acc(
       |> list.reverse
 
     [Right(right), ..rest] ->
-      group_right_acc(
-        already_packaged,
-        [right, ..under_construction],
-        rest,
-      )
+      group_right_acc(already_packaged, [right, ..under_construction], rest)
 
     [Left(left), ..rest] ->
       group_right_acc(
@@ -376,7 +368,7 @@ fn group_right_acc(
 /// 
 /// // -> [Right([]), Left(1), Left(5), Left(4), Right(["a", "b"]), Left(6), Right(["c"])]
 pub fn group_right(
-  vals: List(Either(left, right))
+  vals: List(Either(left, right)),
 ) -> List(Either(left, List(right))) {
   group_right_acc([], [], vals)
 }
@@ -391,7 +383,7 @@ pub fn group_right(
 /// 
 /// // -> [Left(1), Left(5), Left(4), Right(["a", "b"]), Left(6), Right(["c"])]
 pub fn nonempty_group_right(
-  vals: List(Either(left, right))
+  vals: List(Either(left, right)),
 ) -> List(Either(left, List(right))) {
   group_right_acc([], [], vals)
   |> list.filter(fn(x) {
@@ -426,10 +418,7 @@ pub fn map_resolve(
 
 /// constructs an Either from a value and a Bool by wrapping the value with Left
 /// if the Bool is False, Right if the Bool is True
-pub fn from_bool(
-  val: a,
-  bool: Bool,
-) -> Either(a, a) {
+pub fn from_bool(val: a, bool: Bool) -> Either(a, a) {
   case bool {
     False -> Left(val)
     True -> Right(val)
@@ -439,10 +428,7 @@ pub fn from_bool(
 /// constructs an Either from a value val : a and a condition fn(a) -> Bool, 
 /// wrapping the value with Left or Right according to whether the condition evaluates
 /// to False or True, respectively, at the value
-pub fn from_condition(
-  val: a,
-  condition: fn(a) -> Bool,
-) -> Either(a, a) {
+pub fn from_condition(val: a, condition: fn(a) -> Bool) -> Either(a, a) {
   from_bool(val, condition(val))
 }
 

@@ -182,7 +182,13 @@ pub fn group_left_test() {
 }
 
 pub fn nonempty_group_left_test() {
-  gleither.nonempty_group_left([Left(1), Left(5), Right("a"), Right("b"), Left(6)])
+  gleither.nonempty_group_left([
+    Left(1),
+    Left(5),
+    Right("a"),
+    Right("b"),
+    Left(6),
+  ])
   |> should.equal([Left([1, 5]), Right("a"), Right("b"), Left([6])])
 
   gleither.nonempty_group_left([Left(1), Left(5), Right("a"), Right("b")])
@@ -204,7 +210,13 @@ pub fn group_right_test() {
 }
 
 pub fn nonempty_group_right_test() {
-  gleither.nonempty_group_right([Right(1), Right(5), Left("a"), Left("b"), Right(6)])
+  gleither.nonempty_group_right([
+    Right(1),
+    Right(5),
+    Left("a"),
+    Left("b"),
+    Right(6),
+  ])
   |> should.equal([Right([1, 5]), Left("a"), Left("b"), Right([6])])
 
   gleither.nonempty_group_right([Right(1), Right(5), Left("a"), Left("b")])
@@ -215,27 +227,15 @@ pub fn nonempty_group_right_test() {
 }
 
 pub fn resolve_test() {
-  gleither.resolve(
-    Left(1),
-    fn(x) { x + 1 },
-    fn(_) { 0 },
-  )
+  gleither.resolve(Left(1), fn(x) { x + 1 }, fn(_) { 0 })
   |> should.equal(2)
 
-  gleither.resolve(
-    Right(Nil),
-    fn(x) { x + 1 },
-    fn(_) { 0 },
-  )
+  gleither.resolve(Right(Nil), fn(x) { x + 1 }, fn(_) { 0 })
   |> should.equal(0)
 }
 
 pub fn map_resolve_test() {
-  gleither.map_resolve(
-    [Left(1), Right(Nil)],
-    fn(x) { x + 1 },
-    fn(_) { 0 },
-  )
+  gleither.map_resolve([Left(1), Right(Nil)], fn(x) { x + 1 }, fn(_) { 0 })
   |> should.equal([2, 0])
 }
 
