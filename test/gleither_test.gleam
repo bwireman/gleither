@@ -150,6 +150,28 @@ pub fn full_map_test() {
   |> should.equal(Right(3))
 }
 
+pub fn flatten_left_test() {
+  gleither.Left(gleither.Left(1))
+  |> gleither.flatten_left
+  |> should.equal(gleither.Left(1))
+}
+
+pub fn flatten_right_test() {
+  gleither.Right(gleither.Right(1))
+  |> gleither.flatten_right
+  |> should.equal(gleither.Right(1))
+}
+
+pub fn flatten_both() {
+  gleither.Left(gleither.Left(1))
+  |> gleither.flatten_both
+  |> should.equal(gleither.Left(1))
+
+  gleither.Right(gleither.Right(1))
+  |> gleither.flatten_both
+  |> should.equal(gleither.Right(1))
+}
+
 pub fn full_flat_map_test() {
   Left(1)
   |> gleither.full_flat_map(fn(x) { Left(x + 1) }, fn(x) { Right(x * 3) })
